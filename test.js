@@ -50,6 +50,13 @@ describe('react-jsx', function () {
       assume(client).is.a('function');
     });
 
+    it('can wrap the template in a component', function () {
+      var Client = jsx.client(fixtures.react, {component: true});
+
+      assume(Client).is.a('function');
+      assume(React.isValidElement(React.createElement(Client))).is.true();
+    });
+
     it('can render the `react.jsx` to a DOM node', function () {
       var client = jsx.client(fixtures.react);
 

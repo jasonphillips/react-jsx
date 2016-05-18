@@ -27,6 +27,18 @@ function transform(tpl, config, options) {
   var rdom = transformed.code;
   var start = rdom.indexOf('React.createElement');
 
+  if (options.component) {
+    return new Function('data', 'config', [
+      'with (data) return React.createClass({',
+        'componentWillMount: function() { console.log("template mount") },',
+        'render: function() {',
+          rdom.slice(0, start),
+          'return '+ rdom.slice(start),
+        '}',
+      '})'
+    ].join('\n'));
+  }
+
   return new Function('data', 'config', [
     'data = data || {};',
 
@@ -64,7 +76,8 @@ function client(tpl, options) {
     sourceMaps: !!options.debug,
     presets: ['react'],
   }, {
-    render: options.render || (options.raw ? 'renderToStaticMarkup' : 'renderToString')
+    render: options.render || (options.raw ? 'renderToStaticMarkup' : 'renderToString'),
+    component: options.component ? true : false
   });
 }
 
